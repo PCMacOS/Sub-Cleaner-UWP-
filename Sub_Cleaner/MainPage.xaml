@@ -165,9 +165,9 @@
     <Page.BottomAppBar >
         <AppBar Margin="0,0,0,0" IsOpen="False" IsSticky="True" Background="#FF436F6F" Foreground="White" >
             <StackPanel Orientation="Horizontal">
-                <AppBarButton Icon="Help" Label="About" Foreground="White"/>
+                <AppBarButton Icon="Help" Label="About" Foreground="White" Click="About"/>
                 <AppBarButton Icon="Emoji2" Label="Feedback" Foreground="White" Click="EmailMe" />
-                <AppBarButton Icon="Favorite" Label="Rate" Foreground="White"/>
+                <AppBarButton Icon="Favorite" Label="Rate" Foreground="White" Click="Rate"/>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>

@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.Core;
+
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Sub_Cleaner
@@ -36,6 +38,27 @@ namespace Sub_Cleaner
                 Text = "Sample Text"
             };
             ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Auto);
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            var currentView = SystemNavigationManager.GetForCurrentView();
+            currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            currentView.BackRequested += Back_Baton;
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            var currentView = SystemNavigationManager.GetForCurrentView();
+            currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            currentView.BackRequested -= Back_Baton;
+        }
+
+        private void Back_Baton(object sender, BackRequestedEventArgs e)
+        {
+            //if (Frame.CanGoBack()) Frame.GoBack();
+            Frame.Navigate(typeof(MainPage));
         }
     }
 }

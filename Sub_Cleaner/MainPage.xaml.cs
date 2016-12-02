@@ -21,7 +21,10 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI; //Title Bar Color
 using Windows.UI.ViewManagement;//Title Bar Color
-using Windows.ApplicationModel.DataTransfer;//Drag and Drop
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Email;
+
+//Drag and Drop
 using Windows.UI.Core;
 
 
@@ -34,6 +37,7 @@ namespace Sub_Cleaner
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private string _path = string.Empty;
         public MainPage()
         {
             this.InitializeComponent();
@@ -109,6 +113,10 @@ namespace Sub_Cleaner
                     DropFull.Visibility = Visibility.Visible;
                     Arow.Visibility = Visibility.Visible;
                     OldSubSV.Visibility = Visibility.Visible;
+                    var files = await e.DataView.GetStorageItemsAsync();
+                    var file = files.First() as StorageFile;
+
+                    if (file != null) _path = file.Path;
                 }
             }
             
@@ -133,142 +141,147 @@ namespace Sub_Cleaner
 
         }
 
-        private void Clean_Sab(object sender, TappedRoutedEventArgs e)
+        private async void Clean_Sab(object sender, TappedRoutedEventArgs e)
         {
             Arow.Visibility = Visibility.Collapsed;
             DropFull.Visibility = Visibility.Collapsed;
             DropOut.Visibility = Visibility.Visible;
             
             var result = 0; //Anonimus Error
-            const string path = @"H:\Avatar (2009) UHD 4K Upscaled x264 DTS Soup\Avatar (2009) UHD 4K Upscaled x264 DTS Soup.srt";
-            if (File.Exists(path))
+            await Task.Run( () =>
             {
-                int i = 2, cunt_readText = 0, newSub = 0, Num_of_New_Sub = 1;
-                // Open the file to read from.
-                var readText = File.ReadAllLines(path, Encoding.UTF8);
-                var megethos_readText = readText.Length;
-                var CorectSub = new string[((megethos_readText / 2))];
-                foreach (var s in readText)
-                {
-                    var metritis_gia_na_vro_mexri_to_keno = cunt_readText;
-                    var w = i.ToString();
-                    if (s == w)
-                    {
-                        i += 2;
-                        CorectSub[newSub] = Num_of_New_Sub.ToString();
-                        Num_of_New_Sub++;
-                        newSub++;
-                        do
-                        {
-                            if (metritis_gia_na_vro_mexri_to_keno >= megethos_readText - 1) break;
-                            metritis_gia_na_vro_mexri_to_keno++;
-                            CorectSub[newSub] = readText[metritis_gia_na_vro_mexri_to_keno];
-                            newSub++;
-                        } while (readText[metritis_gia_na_vro_mexri_to_keno] != "");
-                        if (newSub != (megethos_readText / 2))
-                        {
-                            CorectSub[newSub] = "";
-                        }
-                    }
-                    cunt_readText++;
-                }
-                i = i - 2;
-                if (i != 0)
-                {
-                    File.WriteAllLines(path, CorectSub, Encoding.UTF8);
-                    result = 1; //Sacsses!
-                }
 
-            }
-            else
-            {
-                result = 3;//Has not finde the file 
-            }
-            //Result
-            {
-                if (result == 1)
+                if (File.Exists(_path))
                 {
-                    // Random Algrithm
+                    int i = 2, cunt_readText = 0, newSub = 0, Num_of_New_Sub = 1;
+                    // Open the file to read from.
+                    var readText = File.ReadAllLines(_path, Encoding.UTF8);
+                    var megethos_readText = readText.Length;
+                    var CorectSub = new string[((megethos_readText / 2))];
+                    foreach (var s in readText)
                     {
-                        var rnd = new Random();
-                        var SLogo = rnd.Next(1, 11);
-                        UnS1.Visibility = Visibility.Collapsed; UnS2.Visibility = Visibility.Collapsed; UnS3.Visibility = Visibility.Collapsed;
-                        S1.Visibility = Visibility.Collapsed; S2.Visibility = Visibility.Collapsed; S3.Visibility = Visibility.Collapsed; S4.Visibility = Visibility.Collapsed; S5.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S7.Visibility = Visibility.Collapsed; S8.Visibility = Visibility.Collapsed; S9.Visibility = Visibility.Collapsed; S10.Visibility = Visibility.Collapsed;
-                        Logo.Visibility = Visibility.Collapsed;
-                        Arow.Visibility = Visibility.Collapsed;
-                        switch (SLogo)
+                        var metritis_gia_na_vro_mexri_to_keno = cunt_readText;
+                        var w = i.ToString();
+                        if (s == w)
                         {
-                            case 1:
-                                S1.Visibility = Visibility.Visible;
-                                break;
-                            case 2:
-                                S2.Visibility = Visibility.Visible;
-                                break;
-                            case 3:
-                                S3.Visibility = Visibility.Visible;
-                                break;
-                            case 4:
-                                S4.Visibility = Visibility.Visible;
-                                break;
-                            case 5:
-                                S5.Visibility = Visibility.Visible;
-                                break;
-                            case 6:
-                                S6.Visibility = Visibility.Visible;
-                                break;
-                            case 7:
-                                S7.Visibility = Visibility.Visible;
-                                break;
-                            case 8:
-                                S8.Visibility = Visibility.Visible;
-                                break;
-                            case 9:
-                                S9.Visibility = Visibility.Visible;
-                                break;
-                            default:
-                                S10.Visibility = Visibility.Visible;
-                                break;
+                            i += 2;
+                            CorectSub[newSub] = Num_of_New_Sub.ToString();
+                            Num_of_New_Sub++;
+                            newSub++;
+                            do
+                            {
+                                if (metritis_gia_na_vro_mexri_to_keno >= megethos_readText - 1) break;
+                                metritis_gia_na_vro_mexri_to_keno++;
+                                CorectSub[newSub] = readText[metritis_gia_na_vro_mexri_to_keno];
+                                newSub++;
+                            } while (readText[metritis_gia_na_vro_mexri_to_keno] != "");
+                            if (newSub != (megethos_readText / 2))
+                            {
+                                CorectSub[newSub] = "";
+                            }
                         }
-                        var myMessage = new MessageDialog("The Subtitle has been Cleaned! ", "Everything went good!");
-                        myMessage.ShowAsync();
+                        cunt_readText++;
                     }
+                    i = i - 2;
+                    if (i != 0)
+                    {
+                        File.WriteAllLines(_path, CorectSub, Encoding.UTF8);
+                        result = 1; //Sacsses!
+                    }
+
                 }
                 else
                 {
-                    // Random Algrithm
+                    result = 3;//Has not finde the file 
+                }
+            });
+            //Result
+            
+                    if (result == 1)
                     {
-                        Random rnd = new Random();
-                        var UnSLogo = rnd.Next(1, 4);
-                        UnS1.Visibility = Visibility.Collapsed; UnS2.Visibility = Visibility.Collapsed; UnS3.Visibility = Visibility.Collapsed;
-                        S1.Visibility = Visibility.Collapsed; S2.Visibility = Visibility.Collapsed; S3.Visibility = Visibility.Collapsed; S4.Visibility = Visibility.Collapsed; S5.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S7.Visibility = Visibility.Collapsed; S8.Visibility = Visibility.Collapsed; S9.Visibility = Visibility.Collapsed; S10.Visibility = Visibility.Collapsed;
-                        Logo.Visibility = Visibility.Collapsed;
-                        Arow.Visibility = Visibility.Collapsed;
-                        switch (UnSLogo)
+                        // Random Algrithm
                         {
-                            case 1:
-                                UnS1.Visibility = Visibility.Visible;
-                                break;
-                            case 2:
-                                UnS2.Visibility = Visibility.Visible;
-                                break;
-                            default:
-                                UnS3.Visibility = Visibility.Visible;
-                                break;
-                        }
-
-                        if (result == 0)
-                        {
-                            var myMessage = new MessageDialog("The Subtitle has not been Cleaned!\nPlease press the question mark button to see how to use the app and try again.  ", "Hmm.. It seems that there's something wrong here!");
-                            myMessage.ShowAsync();
-                        }
-                        else
-                        {
-                            var myMessage = new MessageDialog("The Subtitle has not been Cleaned!\nThe file was not found.", "Hmm.. It seems that there's something wrong here!");
-                            myMessage.ShowAsync();
+                            var rnd = new Random();
+                            var SLogo = rnd.Next(1, 11);
+                            UnS1.Visibility = Visibility.Collapsed; UnS2.Visibility = Visibility.Collapsed; UnS3.Visibility = Visibility.Collapsed;
+                            S1.Visibility = Visibility.Collapsed; S2.Visibility = Visibility.Collapsed; S3.Visibility = Visibility.Collapsed; S4.Visibility = Visibility.Collapsed; S5.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S7.Visibility = Visibility.Collapsed; S8.Visibility = Visibility.Collapsed; S9.Visibility = Visibility.Collapsed; S10.Visibility = Visibility.Collapsed;
+                            Logo.Visibility = Visibility.Collapsed;
+                            Arow.Visibility = Visibility.Collapsed;
+                            switch (SLogo)
+                            {
+                                case 1:
+                                    S1.Visibility = Visibility.Visible;
+                                    break;
+                                case 2:
+                                    S2.Visibility = Visibility.Visible;
+                                    break;
+                                case 3:
+                                    S3.Visibility = Visibility.Visible;
+                                    break;
+                                case 4:
+                                    S4.Visibility = Visibility.Visible;
+                                    break;
+                                case 5:
+                                    S5.Visibility = Visibility.Visible;
+                                    break;
+                                case 6:
+                                    S6.Visibility = Visibility.Visible;
+                                    break;
+                                case 7:
+                                    S7.Visibility = Visibility.Visible;
+                                    break;
+                                case 8:
+                                    S8.Visibility = Visibility.Visible;
+                                    break;
+                                case 9:
+                                    S9.Visibility = Visibility.Visible;
+                                    break;
+                                default:
+                                    S10.Visibility = Visibility.Visible;
+                                    break;
+                            }
+                            var myMessage = new MessageDialog("The Subtitle has been Cleaned! ", "Everything went good!");
+                            await myMessage.ShowAsync();
                         }
                     }
-                }
-            }
+                    else
+                    {
+                        // Random Algrithm
+                        {
+                            Random rnd = new Random();
+                            var UnSLogo = rnd.Next(1, 4);
+                            UnS1.Visibility = Visibility.Collapsed; UnS2.Visibility = Visibility.Collapsed; UnS3.Visibility = Visibility.Collapsed;
+                            S1.Visibility = Visibility.Collapsed; S2.Visibility = Visibility.Collapsed; S3.Visibility = Visibility.Collapsed; S4.Visibility = Visibility.Collapsed; S5.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S6.Visibility = Visibility.Collapsed; S7.Visibility = Visibility.Collapsed; S8.Visibility = Visibility.Collapsed; S9.Visibility = Visibility.Collapsed; S10.Visibility = Visibility.Collapsed;
+                            Logo.Visibility = Visibility.Collapsed;
+                            Arow.Visibility = Visibility.Collapsed;
+                            switch (UnSLogo)
+                            {
+                                case 1:
+                                    UnS1.Visibility = Visibility.Visible;
+                                    break;
+                                case 2:
+                                    UnS2.Visibility = Visibility.Visible;
+                                    break;
+                                default:
+                                    UnS3.Visibility = Visibility.Visible;
+                                    break;
+                            }
+
+                            if (result == 0)
+                            {
+                                var myMessage = new MessageDialog("The Subtitle has not been Cleaned!\nPlease press the question mark button to see how to use the app and try again.  ", "Hmm.. It seems that there's something wrong here!");
+                                await myMessage.ShowAsync();
+                            }
+                            else
+                            {
+                                var myMessage = new MessageDialog("The Subtitle has not been Cleaned!\nThe file was not found.", "Hmm.. It seems that there's something wrong here!");
+                                await myMessage.ShowAsync();
+                            }
+                        }
+                    }
+                
+            
+
         }
 
         private async void Sub_Finder(object sender, TappedRoutedEventArgs e)
@@ -299,9 +312,23 @@ namespace Sub_Cleaner
             Frame.Navigate(typeof(info_Page));
         }
 
-        private void EmailMe(object sender, RoutedEventArgs e)
+        private async void EmailMe(object sender, RoutedEventArgs e)
         {
+            var emailMessage = new EmailMessage();
+            emailMessage.Subject = "SubCleaner (UWP) - Feedback";
+            emailMessage.To.Add(new EmailRecipient("psmakos@hotmail.com", "Panagiotis-Stephanos Makos"));
+            await EmailManager.ShowComposeNewEmailAsync(emailMessage);
+        }
 
+        private void About(object sender, RoutedEventArgs e)
+        {
+           // AboutDialog about = new AboutDialog();
+           // await about.ShowAsync();
+        }
+
+        private void Rate(object sender, RoutedEventArgs e)
+        {
+            //Windows.System.Launcher.LaunchUriAsync(new Uri(""));
         }
     }
 }
