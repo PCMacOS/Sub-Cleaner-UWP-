@@ -37,7 +37,7 @@ namespace Sub_Cleaner
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private string _path = string.Empty;
+        private StorageFile _file = null;
         public MainPage()
         {
             this.InitializeComponent();
@@ -116,7 +116,7 @@ namespace Sub_Cleaner
                     var files = await e.DataView.GetStorageItemsAsync();
                     var file = files.First() as StorageFile;
 
-                    if (file != null) _path = file.Path;
+                    if (file != null) _file = file;
                 }
             }
             
@@ -148,16 +148,25 @@ namespace Sub_Cleaner
             DropOut.Visibility = Visibility.Visible;
             
             var result = 0; //Anonimus Error
-            await Task.Run( () =>
+            await Task.Run(async () =>
             {
 
-                if (File.Exists(_path))
+                if (_file != null)
                 {
                     int i = 2, cunt_readText = 0, newSub = 0, Num_of_New_Sub = 1;
                     // Open the file to read from.
-                    var readText = File.ReadAllLines(_path, Encoding.UTF8);
-                    var megethos_readText = readText.Length;
-                    var CorectSub = new string[((megethos_readText / 2))];
+                    //var readText = File.ReadAllLines(, Encoding.UTF8);
+                    List<string> readText = new List<string>();
+                    using (var str = new StreamReader((await _file.OpenStreamForReadAsync()),Encoding.UTF8))
+                    {
+                        while (!str.EndOfStream)
+                            readText.Add(str.ReadLine());
+
+                        str.Dispose();
+
+                    }
+                    var megethos_readText = readText.Count;
+                    var CorectSub = new string[megethos_readText/2];
                     foreach (var s in readText)
                     {
                         var metritis_gia_na_vro_mexri_to_keno = cunt_readText;
@@ -185,7 +194,18 @@ namespace Sub_Cleaner
                     i = i - 2;
                     if (i != 0)
                     {
-                        File.WriteAllLines(_path, CorectSub, Encoding.UTF8);
+                        //File.WriteAllLines(_path, CorectSub, Encoding.UTF8);
+                        using (var str = new StreamWriter((await _file.OpenStreamForWriteAsync()),Encoding.UTF8))
+                        {
+                            str.Flush();
+                            foreach (var s in CorectSub)
+                            {
+                                await str.WriteLineAsync(s);
+                            }
+
+                            str.Dispose();
+
+                        }
                         result = 1; //Sacsses!
                     }
 
@@ -299,11 +319,12 @@ namespace Sub_Cleaner
                 OldSubSV.Visibility = Visibility.Visible;
                 DropOut.Visibility = Visibility.Collapsed;
                 DropFull.Visibility = Visibility.Visible;
-                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read); using
+                /*var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read); using
                 (var reader = new StreamReader(stream.AsStream()))
                 {
                     OldSub.Text = reader.ReadToEnd();
-                }
+                }*/
+                _file = file;
             }
         }
 
