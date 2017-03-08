@@ -55,17 +55,17 @@ namespace Sub_Cleaner
 
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            currentView.BackRequested += Back_Baton;
+            currentView.BackRequested += Back_Button;
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            currentView.BackRequested -= Back_Baton;
+            currentView.BackRequested -= Back_Button;
         }
 
-        private void Back_Baton(object sender, BackRequestedEventArgs e)
+        private void Back_Button(object sender, BackRequestedEventArgs e)
         {
             //if (Frame.CanGoBack()) Frame.GoBack();
             Frame.Navigate(typeof(MainPage));
@@ -85,7 +85,8 @@ namespace Sub_Cleaner
             titleBar.ButtonForegroundColor = Colors.Black;
         }
 
-        private void DropArea_DragOver(object sender, DragEventArgs e)
+        //DragandDrop not working in UWP
+        /*private void DropArea_DragOver(object sender, DragEventArgs e)
         {
             e.AcceptedOperation = DataPackageOperation.Link;
             if (e.DragUIOverride != null)
@@ -112,7 +113,7 @@ namespace Sub_Cleaner
                     DropOut.Visibility = Visibility.Collapsed;
                     DropFull.Visibility = Visibility.Visible;
                     Arow.Visibility = Visibility.Visible;
-                    OldSubSV.Visibility = Visibility.Visible;
+                    //OldSubSV.Visibility = Visibility.Visible;
                     var files = await e.DataView.GetStorageItemsAsync();
                     var file = files.First() as StorageFile;
 
@@ -125,7 +126,7 @@ namespace Sub_Cleaner
         private void DropArea_DragLeave(object sender, DragEventArgs e)
         {
             DropArea.Background = new SolidColorBrush(Colors.Transparent);
-        }
+        }*/
 
         private void DispatcherTimer_Tick(object sender, object e)
         {
@@ -150,14 +151,14 @@ namespace Sub_Cleaner
             var result = 0; //Anonimus Error
             await Task.Run(async () =>
             {
-
                 if (_file != null)
                 {
+                   // string path = _file.Path;
                     int i = 2, cunt_readText = 0, newSub = 0, Num_of_New_Sub = 1;
                     // Open the file to read from.
-                    //var readText = File.ReadAllLines(, Encoding.UTF8);
+                    //var readText = File.ReadAllLines(path);
                     List<string> readText = new List<string>();
-                    using (var str = new StreamReader((await _file.OpenStreamForReadAsync()),Encoding.UTF8))
+                    using (var str = new StreamReader((await _file.OpenStreamForReadAsync()), Encoding.UTF8))
                     {
                         while (!str.EndOfStream)
                             readText.Add(str.ReadLine());
@@ -194,18 +195,20 @@ namespace Sub_Cleaner
                     i = i - 2;
                     if (i != 0)
                     {
-                        //File.WriteAllLines(_path, CorectSub, Encoding.UTF8);
-                        using (var str = new StreamWriter((await _file.OpenStreamForWriteAsync()),Encoding.UTF8))
+
+                        //File.WriteAllLines(path, CorectSub);
+                        //await _file.DeleteAsync();
+                        await FileIO.WriteTextAsync(_file, "");
+                        using (var str = new StreamWriter((await _file.OpenStreamForWriteAsync()), Encoding.UTF8))
                         {
                             str.Flush();
                             foreach (var s in CorectSub)
                             {
                                 await str.WriteLineAsync(s);
                             }
-
                             str.Dispose();
-
                         }
+                        
                         result = 1; //Sacsses!
                     }
 
@@ -316,7 +319,7 @@ namespace Sub_Cleaner
             if (file != null)
             {
                 Arow.Visibility = Visibility.Visible;
-                OldSubSV.Visibility = Visibility.Visible;
+                //OldSubSV.Visibility = Visibility.Visible;
                 DropOut.Visibility = Visibility.Collapsed;
                 DropFull.Visibility = Visibility.Visible;
                 /*var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read); using
